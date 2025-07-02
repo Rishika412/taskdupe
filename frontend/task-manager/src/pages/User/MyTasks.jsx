@@ -20,8 +20,6 @@ const MyTasks = () => {
         params: { status: filterStatus === "All" ? "" : filterStatus },
       });
 
-      console.log("Tasks response:", response.data);
-
       setAllTasks(response.data?.tasks || []);
 
       const statusSummary = response.data?.statusSummary || {};
@@ -36,36 +34,41 @@ const MyTasks = () => {
       setTabs(statusArray);
     } catch (error) {
       console.error("Error fetching tasks:", error);
-      setAllTasks([]); // clear tasks on error
+      setAllTasks([]);
       setTabs([]);
     }
   };
 
   const handleClick = (taskId) => {
-    navigate(`/user/task-details/${taskId}`);
+    navigate(`/user/tasks-details/${taskId}`); // ✅ Correct path (not task-details)
   };
 
- 
+  const handleDownloadReport = () => {
+    toast("Download logic not implemented yet");
+    // You can later add Excel/PDF export logic here
+  };
+
   useEffect(() => {
     getAllTasks();
   }, [filterStatus]);
 
   return (
-  <DashboardLayout activeMenu="My Tasks">
-    <div className="my-5">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between">
-        <h2 className="text-xl md:text-xl font-medium">My Tasks</h2>
+    <DashboardLayout activeMenu="My Tasks">
+      <div className="my-5">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between">
+          <h2 className="text-xl md:text-xl font-medium">My Tasks</h2>
 
-        {tabs?.[0]?.count > 0 && (
-          <TaskStatusTabs
-            tabs={tabs}
-            activeTab={filterStatus}
-            setActiveTab={setFilterStatus}
-          />
-        )}
-      </div>
-      {allTasks.length > 0 && (
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          {tabs?.[0]?.count > 0 && (
+            <TaskStatusTabs
+              tabs={tabs}
+              activeTab={filterStatus}
+              setActiveTab={setFilterStatus}
+            />
+          )}
+        </div>
+
+        {allTasks.length > 0 && (
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mt-4">
             <TaskStatusTabs
               tabs={tabs}
               activeTab={filterStatus}
@@ -81,30 +84,27 @@ const MyTasks = () => {
           </div>
         )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-        {allTasks?.map((item, index) => (
-          <TaskCard
-            key={item._id || index}
-            title={item.title}
-            description={item.description}
-            priority={item.priority}
-            status={item.status}
-            progress={item.progress}
-            createdAt={item.createdAt}
-            dueDate={item.dueDate}
-            assignedTo={item.assignedTo}
-            attachmentsCount={item.attachments?.length || 0}
-            completedTodoCount={item.completedTodoCount || 0}
-            todoChecklist={item.todoChecklist || []}
-            onClick={() => handleClick(item._id)}
-              
-          />
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          {allTasks?.map((item, index) => (
+            <TaskCard
+              key={item._id || index}
+              title={item.title}
+              description={item.description}
+              priority={item.priority}
+              status={item.status}
+              progress={item.progress}
+              createdAt={item.createdAt}
+              dueDate={item.dueDate}
+              assignedTo={item.assignedTo}
+              attachmentsCount={item.attachments?.length || 0}
+              completedTodoCount={item.completedTodoCount || 0}
+              todoChecklist={item.todoChecklist || []}
+              onClick={() => handleClick(item._id)}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  </DashboardLayout>
-
-
+    </DashboardLayout>
   );
 };
 

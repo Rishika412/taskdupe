@@ -10,7 +10,7 @@ const PrivateRoute = ({ allowedRoles }) => {
   if (!user) return <Navigate to="/login" />;
 
   if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/" />; // optional: redirect to home if role is invalid
+    return <div className="text-center p-10 text-red-500 text-lg">Access Denied</div>;
   }
 
   return <Outlet />;
